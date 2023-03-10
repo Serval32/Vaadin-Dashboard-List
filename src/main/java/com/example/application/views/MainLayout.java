@@ -1,0 +1,60 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.example.application.views;
+
+import com.example.application.security.SecurityService;
+import com.example.application.views.list.DashboardView;
+import com.example.application.views.list.ListView;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.HighlightConditions;
+import com.vaadin.flow.router.RouterLink;
+
+/**
+ *
+ * @author PC
+ */
+public class MainLayout extends AppLayout{
+
+    private SecurityService securityService;
+    
+    public MainLayout(SecurityService securityService){
+        this.securityService = securityService;
+        createHeader();
+        createDrawer();
+    }
+
+    private void createHeader() {
+        H1 logo = new H1("Vaadin CRM");
+        logo.addClassNames("text-l", "m-m");
+        
+        Button logOut = new Button("logout", e -> securityService.logout());
+        
+        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, logOut);
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        header.expand(logo);
+        header.setWidthFull();
+        header.addClassNames("py-0", "px-m");
+        
+        addToNavbar(header);
+    }
+
+    private void createDrawer() {
+        RouterLink listLink = new RouterLink("List", ListView.class); 
+        listLink.setHighlightCondition(HighlightConditions.sameLocation()); 
+
+        addToDrawer(new VerticalLayout( 
+            listLink, 
+            new RouterLink("Dashboard", DashboardView.class)
+        ));
+        
+    }
+    
+}
